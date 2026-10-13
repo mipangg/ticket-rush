@@ -1,3 +1,12 @@
+---
+name: mipangg's custom issue template
+about: mipangg's custom issue template
+title: "[기능 | 버그 | 리팩토링 | 문서] 간단한 설명"
+labels: ''
+assignees: ''
+
+---
+
 ## 📌 제목
 [기능 | 버그 | 리팩토링 | 문서] 간단한 설명
 예시: [기능] 로그인 API 추가
@@ -12,3 +21,7 @@
 ## 📎 관련 자료
 - 디자인 링크, 레퍼런스 등
 - 관련 이슈나 PR: #번호
+
+## 🧑‍💻 작업자
+이름-@id
+예시: 홍길동-@gildong
