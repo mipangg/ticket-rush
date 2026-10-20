@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,5 +35,18 @@ public class Concert extends BaseEntity {
 
     @Column(nullable = false)
     private String location;
+
+    @Builder
+    public Concert(
+            String title,
+            LocalDateTime startAt,
+            LocalDateTime endAt,
+            String location
+    ) {
+        this.title = title;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.location = location;
+    }
 
 }

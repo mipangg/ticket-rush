@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -46,4 +45,16 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private ReservationStatus status;
 
+    @Builder
+    public Payment(
+            String transactionId,
+            BigDecimal price,
+            Reservation reservation,
+            ReservationStatus status
+    ) {
+        this.transactionId = transactionId;
+        this.price = price;
+        this.reservation = reservation;
+        this.status = status;
+    }
 }

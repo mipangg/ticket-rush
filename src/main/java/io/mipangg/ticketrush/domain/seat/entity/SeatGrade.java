@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
         }
 )
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SeatGrade extends BaseEntity {
@@ -49,5 +48,16 @@ public class SeatGrade extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "concert_id", nullable = false)
     private Concert concert;
+
+    @Builder
+    public SeatGrade(
+            String grade,
+            BigDecimal price,
+            Concert concert
+    ) {
+        this.grade = grade;
+        this.price = price;
+        this.concert = concert;
+    }
 
 }
