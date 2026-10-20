@@ -1,4 +1,4 @@
-package io.mipangg.ticketrush.domain.controller;
+package io.mipangg.ticketrush.domain.concert.controller;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.service.ConcertService;

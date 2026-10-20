@@ -14,9 +14,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
     @CreatedDate // 생성일 자동 저장
-    private LocalDateTime created;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate // 수정일 자동 저장
-    private LocalDateTime updated;
+    private LocalDateTime updatedAt;
 
 }
