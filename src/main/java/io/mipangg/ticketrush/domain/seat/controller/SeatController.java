@@ -27,7 +27,7 @@ public class SeatController {
             @Positive @PathVariable Long concertId,
             @Valid @RequestBody SeatCreateRequest req
 ) {
-        return seatService.saveSeat(req);
+        return seatService.saveSeat(concertId, req);
     }
 
 }

@@ -19,7 +19,7 @@ public enum ErrorCode {
      * 409 CONFLICT
      */
     CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 데이터입니다."),
-
+    DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT, "데이터 무결성 제약조건을 위반했습니다."),
     /*
      * 500 INTERNAL_SERVER_ERROR: 내부 서버 오류
      */

@@ -1,5 +1,7 @@
 package io.mipangg.ticketrush.domain.concert.service;
 
+import static io.mipangg.ticketrush.util.TestUtil.genConcert;
+import static io.mipangg.ticketrush.util.TestUtil.genConcertCreateRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,12 +37,7 @@ class ConcertServiceTests {
     @DisplayName("공연을 정상적으로 등록할 수 있다")
     void saveConcertSuccessTest() {
 
-        ConcertCreateRequest req = new ConcertCreateRequest(
-                "뮤지컬 위키드",
-                LocalDateTime.of(2026, 10, 10, 19, 0),
-                LocalDateTime.of(2026, 10, 10, 21, 30),
-                "예술의전당 오페라극장"
-        );
+        ConcertCreateRequest req = genConcertCreateRequest();
 
         Concert savedConcert = Concert.builder()
                 .title(req.title())
@@ -70,12 +67,7 @@ class ConcertServiceTests {
 
         Long concertId = 1L;
 
-        Concert concert = Concert.builder()
-                .title("뮤지컬 위키드")
-                .startAt(LocalDateTime.of(2026, 10, 10, 19, 0))
-                .endAt(LocalDateTime.of(2026, 10, 10, 21, 30))
-                .location("예술의전당 오페라극장")
-                .build();
+        Concert concert = genConcert();
 
         when(concertRepository.findById(concertId)).thenReturn(Optional.of(concert));
 

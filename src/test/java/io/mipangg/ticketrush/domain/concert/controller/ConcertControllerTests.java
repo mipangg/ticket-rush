@@ -1,5 +1,6 @@
 package io.mipangg.ticketrush.domain.concert.controller;
 
+import static io.mipangg.ticketrush.util.TestUtil.genConcertCreateRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,12 +40,7 @@ class ConcertControllerTests {
     @DisplayName("공연 생성 성공 테스트")
     void createConcertSuccessTest() throws Exception {
 
-        ConcertCreateRequest req = new ConcertCreateRequest(
-                "뮤지컬 위키드",
-                LocalDateTime.of(2026, 10, 10, 19, 0),
-                LocalDateTime.of(2026, 10, 10, 21, 30),
-                "예술의전당 오페라극장"
-        );
+        ConcertCreateRequest req = genConcertCreateRequest();
 
         ConcertCreateResponse resp = new ConcertCreateResponse(
                 1L,

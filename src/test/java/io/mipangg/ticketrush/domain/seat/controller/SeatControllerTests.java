@@ -1,6 +1,7 @@
 package io.mipangg.ticketrush.domain.seat.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,7 +50,7 @@ class SeatControllerTests {
                 LocalDateTime.of(2026, 9, 21, 16, 0)
         );
 
-        when(seatService.saveSeat(any(SeatCreateRequest.class))).thenReturn(resp);
+        when(seatService.saveSeat(anyLong(), any(SeatCreateRequest.class))).thenReturn(resp);
 
         mockMvc.perform(post("/api/concerts/{concertId}/seats", concertId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +62,7 @@ class SeatControllerTests {
                 .andExpect(jsonPath("$.seatGradeId").value(1))
                 .andDo(print());
 
-        verify(seatService).saveSeat(any(SeatCreateRequest.class));
+        verify(seatService).saveSeat(anyLong(), any(SeatCreateRequest.class));
 
     }
 
