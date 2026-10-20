@@ -47,4 +47,13 @@ class ConcertServiceTests {
 
     }
 
+    @Test
+    @DisplayName("공연을 단건 조회할 수 있다")
+    void getConcertDetailSuccessTest() {
+
+        Long concertId = 1L;
+
+
+    }
+
 }

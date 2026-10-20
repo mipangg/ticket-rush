@@ -46,7 +46,24 @@ public class ConcertService {
         );
     }
 
+    @Transactional(readOnly = true)
     public ConcertDetailResponse getConcertDetail(Long concertId) {
-        return null;
+
+        Concert targetConcert = concertRepository.findById(concertId)
+                .orElseThrow(() -> new CustomLogicException(
+                        ErrorCode.NOT_FOUND,
+                        "해당 공연을 찾을 수 없습니다."
+                ));
+
+
+        return new ConcertDetailResponse(
+                targetConcert.getId(),
+                targetConcert.getTitle(),
+                targetConcert.getStartAt(),
+                targetConcert.getEndAt(),
+                targetConcert.getLocation(),
+                targetConcert.getCreatedAt(),
+                targetConcert.getUpdatedAt()
+        );
     }
 }
