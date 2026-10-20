@@ -32,15 +32,15 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", nullable = false)
-    private Reservation reservation;
-
     @Column(nullable = false, unique = true)
     private String transactionId;
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
