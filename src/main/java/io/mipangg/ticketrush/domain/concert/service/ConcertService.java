@@ -52,7 +52,7 @@ public class ConcertService {
         Concert targetConcert = concertRepository.findById(concertId)
                 .orElseThrow(() -> new CustomLogicException(
                         ErrorCode.NOT_FOUND,
-                        "해당 공연을 찾을 수 없습니다."
+                        "해당 공연 데이터를 찾을 수 없습니다."
                 ));
 
 
