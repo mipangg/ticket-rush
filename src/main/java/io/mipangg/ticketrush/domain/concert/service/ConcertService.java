@@ -2,6 +2,7 @@ package io.mipangg.ticketrush.domain.concert.service;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.concert.repository.ConcertRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
@@ -43,5 +44,9 @@ public class ConcertService {
                 savedConcert.getLocation(),
                 savedConcert.getCreatedAt()
         );
+    }
+
+    public ConcertDetailResponse getConcertDetail(Long concertId) {
+        return null;
     }
 }

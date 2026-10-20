@@ -1,11 +1,14 @@
 package io.mipangg.ticketrush.domain.concert.controller;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
 import io.mipangg.ticketrush.domain.concert.service.ConcertService;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +26,12 @@ public class ConcertController {
     @ResponseStatus(HttpStatus.CREATED)
     public ConcertCreateResponse createConcert(@Valid @RequestBody ConcertCreateRequest req) {
         return concertService.saveConcert(req);
+    }
+
+    @GetMapping("/{concertId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ConcertDetailResponse getConcertDetail(@PathVariable Long concertId) {
+        return concertService.getConcertDetail(concertId);
     }
 
 }
