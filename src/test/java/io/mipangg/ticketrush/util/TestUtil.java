@@ -2,6 +2,7 @@ package io.mipangg.ticketrush.util;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
+import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,6 +25,13 @@ public class TestUtil {
                 .startAt(LocalDateTime.of(2026, 10, 10, 19, 0))
                 .endAt(LocalDateTime.of(2026, 10, 10, 21, 30))
                 .location("예술의전당 오페라극장")
+                .build();
+    }
+
+    public static Seat genSeat() {
+        return Seat.builder()
+                .number("A-01")
+                .seatGrade(genSeatGrade())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package io.mipangg.ticketrush.domain.seat.service;
 
+import static io.mipangg.ticketrush.util.TestUtil.genSeat;
 import static io.mipangg.ticketrush.util.TestUtil.genSeatGrade;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -16,7 +17,6 @@ import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
-import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ class SeatServiceTests {
         SeatCreateResponse resp = seatService.saveSeat(concertId, req);
 
         assertThat(resp.concertId()).isEqualTo(concertId);
-        assertThat(resp.seatGradeId()).isEqualTo(seatGrade.getId());
+        assertThat(resp.seatGrade()).isEqualTo(seatGrade.getGrade());
         assertThat(resp.number()).isEqualTo("A-01");
         verify(seatGradeRepository).findByIdAndConcertId(req.seatGradeId(), concertId);
         verify(seatRepository).save(any(Seat.class));
@@ -104,6 +104,46 @@ class SeatServiceTests {
                 }
         ).isInstanceOf(CustomLogicException.class)
                 .hasMessage("이미 존재하는 데이터입니다.");
+
+    }
+
+    @Test
+    @DisplayName("좌석 id로 좌석을 단건 조회할 수 있다")
+    void getSeatDetailSuccessTest() {
+
+        Long concertId = 1L;
+        Long seatId = 1L;
+
+        Seat seat = genSeat();
+
+        when(seatRepository.findByIdAndConcertIdWithSeatGrade(seatId, concertId))
+                .thenReturn(Optional.of(seat));
+
+        SeatDetailResponse resp = seatService.getSeatDetail(concertId, seatId);
+
+        assertThat(resp.seatGrade()).isEqualTo("VIP");
+        assertThat(resp.number()).isEqualTo("A-01");
+
+        verify(seatRepository).findByIdAndConcertIdWithSeatGrade(seatId, concertId);
+
+    }
+
+    @Test
+    @DisplayName("좌석 단건 조회 시 일치하는 id가 없으면 예외가 발생한다")
+    void getSeatDetailFailTest() {
+
+        Long concertId = 1L;
+        Long seatId = 1L;
+
+        when(seatRepository.findByIdAndConcertIdWithSeatGrade(seatId, concertId))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+                () -> {
+                    seatService.getSeatDetail(concertId, seatId);
+                }
+        ).isInstanceOf(CustomLogicException.class)
+                .hasMessage("데이터를 찾을 수 없습니다.");
 
     }
 

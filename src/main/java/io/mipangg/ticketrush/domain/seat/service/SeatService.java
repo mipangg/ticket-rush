@@ -24,12 +24,7 @@ public class SeatService {
     @Transactional
     public SeatCreateResponse saveSeat(Long concertId, SeatCreateRequest req) {
 
-        // 좌석 등급 조회 시 concertId 검증도 함께
-        SeatGrade seatGrade = seatGradeRepository.findByIdAndConcertId(req.seatGradeId(), concertId)
-                .orElseThrow(() -> new CustomLogicException(
-                        ErrorCode.NOT_FOUND,
-                        "해당 콘서트의 좌석 등급 데이터를 찾을 수 없습니다."
-                ));
+        SeatGrade seatGrade = getSeatGrade(req.seatGradeId(), concertId);
 
         Seat seat = Seat.builder()
                 .number(req.number())
@@ -50,7 +45,7 @@ public class SeatService {
                     savedSeat.getId(),
                     concertId,
                     savedSeat.getNumber(),
-                    seatGrade.getId(),
+                    seatGrade.getGrade(),
                     savedSeat.getCreatedAt(),
                     savedSeat.getUpdatedAt()
             );
@@ -61,6 +56,30 @@ public class SeatService {
 
     @Transactional(readOnly = true)
     public SeatDetailResponse getSeatDetail(Long concertId, Long seatId) {
-        return null;
+
+        Seat targetSeat = seatRepository.findByIdAndConcertIdWithSeatGrade(seatId, concertId)
+                .orElseThrow(() -> new CustomLogicException(
+                        ErrorCode.NOT_FOUND,
+                        "해당 좌석 데이터를 찾을 수 없습니다."
+                ));
+
+        //  TODO: 우선 좌석 상태는 "AVAILABLE" 고정
+        return new SeatDetailResponse(
+                targetSeat.getId(),
+                concertId,
+                targetSeat.getNumber(),
+                targetSeat.getSeatGrade().getGrade(),
+                targetSeat.getSeatGrade().getPrice(),
+                "AVAILABLE"
+        );
+    }
+
+    private SeatGrade getSeatGrade(Long seatGradeId, Long concertId) {
+        // 좌석 등급 조회 시 concertId 검증도 함께
+        return seatGradeRepository.findByIdAndConcertId(seatGradeId, concertId)
+                .orElseThrow(() -> new CustomLogicException(
+                        ErrorCode.NOT_FOUND,
+                        "해당 콘서트의 좌석 등급 데이터를 찾을 수 없습니다."
+                ));
     }
 }

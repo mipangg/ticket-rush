@@ -48,7 +48,7 @@ class SeatControllerTests {
                 101L,
                 1L,
                 "A-01",
-                1L,
+                "VIP",
                 LocalDateTime.of(2026, 9, 21, 16, 0),
                 LocalDateTime.of(2026, 9, 21, 16, 0)
         );
@@ -62,7 +62,7 @@ class SeatControllerTests {
                 .andExpect(jsonPath("$.id").value(101))
                 .andExpect(jsonPath("$.concertId").value(1))
                 .andExpect(jsonPath("$.number").value("A-01"))
-                .andExpect(jsonPath("$.seatGradeId").value(1))
+                .andExpect(jsonPath("$.seatGrade").value("VIP"))
                 .andDo(print());
 
         verify(seatService).saveSeat(anyLong(), any(SeatCreateRequest.class));
