@@ -10,11 +10,13 @@ import static org.mockito.Mockito.when;
 
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
 import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
+import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

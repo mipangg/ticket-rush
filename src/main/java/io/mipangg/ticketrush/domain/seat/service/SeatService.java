@@ -2,6 +2,7 @@ package io.mipangg.ticketrush.domain.seat.service;
 
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
 import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
@@ -56,5 +57,10 @@ public class SeatService {
         } catch (DataIntegrityViolationException e) {
             throw new CustomLogicException(ErrorCode.DATA_INTEGRITY_VIOLATION);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public SeatDetailResponse getSeatDetail(Long concertId, Long seatId) {
+        return null;
     }
 }

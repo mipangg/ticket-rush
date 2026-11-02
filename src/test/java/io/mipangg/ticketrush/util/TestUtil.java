@@ -2,7 +2,6 @@ package io.mipangg.ticketrush.util;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
-import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

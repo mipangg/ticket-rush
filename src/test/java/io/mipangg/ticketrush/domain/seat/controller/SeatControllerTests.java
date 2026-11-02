@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
 import io.mipangg.ticketrush.domain.seat.service.SeatService;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,6 +66,39 @@ class SeatControllerTests {
                 .andDo(print());
 
         verify(seatService).saveSeat(anyLong(), any(SeatCreateRequest.class));
+
+    }
+
+
+    @Test
+    @DisplayName("좌석 개별 조회 성공 테스트")
+    void getSeatDetailSuccessTest() throws Exception {
+
+        Long concertId = 1L;
+        Long seatId = 1L;
+
+        SeatDetailResponse resp = new SeatDetailResponse(
+                101L,
+                1L,
+                "A-01",
+                "VIP",
+                BigDecimal.valueOf(150000),
+                "AVAILABLE"
+        );
+
+        when(seatService.getSeatDetail(concertId, seatId)).thenReturn(resp);
+
+        mockMvc.perform(get("/api/concerts/{concertId}/seats/{seatId}", concertId, seatId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(101))
+                .andExpect(jsonPath("$.concertId").value(1))
+                .andExpect(jsonPath("$.number").value("A-01"))
+                .andExpect(jsonPath("$.seatGrade").value("VIP"))
+                .andExpect(jsonPath("$.price").value(150000))
+                .andExpect(jsonPath("$.status").value("AVAILABLE"))
+                .andDo(print());
+
+        verify(seatService).getSeatDetail(concertId, seatId);
 
     }
 

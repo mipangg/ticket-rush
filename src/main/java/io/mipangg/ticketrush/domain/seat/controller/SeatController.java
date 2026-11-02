@@ -2,11 +2,13 @@ package io.mipangg.ticketrush.domain.seat.controller;
 
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
 import io.mipangg.ticketrush.domain.seat.service.SeatService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +30,15 @@ public class SeatController {
             @Valid @RequestBody SeatCreateRequest req
 ) {
         return seatService.saveSeat(concertId, req);
+    }
+
+    @GetMapping("/{seatId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SeatDetailResponse getSeatDetail(
+            @Positive @PathVariable Long concertId,
+            @Positive @PathVariable Long seatId
+    ) {
+        return seatService.getSeatDetail(concertId, seatId);
     }
 
 }
