@@ -4,6 +4,10 @@ import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
 import io.mipangg.ticketrush.domain.concert.service.ConcertService;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Concert", description = "공연 관련 API")
 @RestController
 @RequestMapping("/api/concerts")
 @RequiredArgsConstructor
@@ -22,12 +27,28 @@ public class ConcertController {
 
     private final ConcertService concertService;
 
+    @Operation(
+            summary = "공연 생성",
+            description = "정보를 입력하여 공연을 생성합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "공연 생성 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 정보를 포함한 공연")
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ConcertCreateResponse createConcert(@Valid @RequestBody ConcertCreateRequest req) {
         return concertService.saveConcert(req);
     }
 
+    @Operation(
+            summary = "공연 개별 조회",
+            description = "공연 ID를 이용하여 공연 좌석 정보를 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "공연 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 공연")
+    })
     @GetMapping("/{concertId}")
     @ResponseStatus(HttpStatus.OK)
     public ConcertDetailResponse getConcertDetail(@PathVariable Long concertId) {
