@@ -64,7 +64,7 @@ public class ConcertController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "공연 목록 조회 성공"),
     })
-    @GetMapping()
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ConcertSummaryResponse> getConcerts() {
         return concertService.getConcerts();

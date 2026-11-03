@@ -3,6 +3,7 @@ package io.mipangg.ticketrush.domain.seat.controller;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
 import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatSummaryResponse;
 import io.mipangg.ticketrush.domain.seat.service.SeatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +51,7 @@ public class SeatController {
     }
 
     @Operation(
-            summary = "좌석 개별 조회",
+            summary = "좌석 단건 조회",
             description = "공연 ID와 좌석 ID를 이용하여 특정 공연의 개별 좌석 정보를 조회합니다."
     )
     @ApiResponses({
@@ -63,6 +65,20 @@ public class SeatController {
             @Positive @PathVariable Long seatId
     ) {
         return seatService.getSeatDetail(concertId, seatId);
+    }
+
+    @Operation(
+            summary = "좌석 목록 조회",
+            description = "공연 ID를 이용하여 특정 공연의 전체 좌석 목록 정보를 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좌석 목록 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 공연")
+    })
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<SeatSummaryResponse> getSeats(@Positive @PathVariable Long concertId) {
+        return seatService.getSeats(concertId);
     }
 
 }

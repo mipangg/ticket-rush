@@ -3,12 +3,14 @@ package io.mipangg.ticketrush.domain.seat.service;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
 import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatSummaryResponse;
 import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import io.mipangg.ticketrush.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -72,6 +74,11 @@ public class SeatService {
                 targetSeat.getSeatGrade().getPrice(),
                 "AVAILABLE"
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<SeatSummaryResponse> getSeats(Long concertId) {
+        return null;
     }
 
     private SeatGrade getSeatGrade(Long seatGradeId, Long concertId) {

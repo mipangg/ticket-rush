@@ -1,5 +1,6 @@
 package io.mipangg.ticketrush.domain.seat.controller;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -14,9 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
 import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatSummaryResponse;
 import io.mipangg.ticketrush.domain.seat.service.SeatService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +102,59 @@ class SeatControllerTests {
                 .andDo(print());
 
         verify(seatService).getSeatDetail(concertId, seatId);
+
+    }
+
+    @Test
+    @DisplayName("좌석 목록 조회 성공 테스트")
+    void getSeatsSuccessTest() throws Exception {
+
+        Long concertId = 1L;
+
+        List<SeatSummaryResponse> resp = List.of(
+                new SeatSummaryResponse(
+                        101L,
+                        "A-01",
+                        "VIP",
+                        BigDecimal.valueOf(150000),
+                        "AVAILABLE"
+                ),
+                new SeatSummaryResponse(
+                        102L,
+                        "A-02",
+                        "VIP",
+                        BigDecimal.valueOf(150000),
+                        "HELD"
+                ),
+                new SeatSummaryResponse(
+                        103L,
+                        "A-03",
+                        "R",
+                        BigDecimal.valueOf(100000),
+                        "SOLD"
+                )
+        );
+
+        when(seatService.getSeats(concertId)).thenReturn(resp);
+
+        mockMvc.perform(get("/api/concerts/{concertId}/seats", concertId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].number").value("A-01"))
+                .andExpect(jsonPath("$[1].number").value("A-02"))
+                .andExpect(jsonPath("$[2].number").value("A-03"))
+                .andExpect(jsonPath("$[0].seatGrade").value("VIP"))
+                .andExpect(jsonPath("$[1].seatGrade").value("VIP"))
+                .andExpect(jsonPath("$[2].seatGrade").value("R"))
+                .andExpect(jsonPath("$[0].price").value(150000))
+                .andExpect(jsonPath("$[1].price").value(150000))
+                .andExpect(jsonPath("$[2].price").value(100000))
+                .andExpect(jsonPath("$[0].status").value("AVAILABLE"))
+                .andExpect(jsonPath("$[1].status").value("HELD"))
+                .andExpect(jsonPath("$[2].status").value("SOLD"))
+                .andDo(print());
+
+        verify(seatService).getSeats(concertId);
 
     }
 
