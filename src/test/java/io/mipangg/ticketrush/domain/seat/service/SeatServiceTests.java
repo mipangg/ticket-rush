@@ -2,6 +2,7 @@ package io.mipangg.ticketrush.domain.seat.service;
 
 import static io.mipangg.ticketrush.util.TestUtil.genSeat;
 import static io.mipangg.ticketrush.util.TestUtil.genSeatGrade;
+import static io.mipangg.ticketrush.util.TestUtil.genSeats;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,11 +13,14 @@ import static org.mockito.Mockito.when;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateRequest;
 import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
 import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
+import io.mipangg.ticketrush.domain.seat.dto.SeatSummaryResponse;
 import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -144,6 +148,40 @@ class SeatServiceTests {
                 }
         ).isInstanceOf(CustomLogicException.class)
                 .hasMessage("데이터를 찾을 수 없습니다.");
+
+    }
+
+    @Test
+    @DisplayName("공연 id로 좌석 목록 조회를 할 수 있다")
+    void getSeatsSuccessTest() {
+
+        Long concertId = 1L;
+        List<Seat> seats = genSeats();
+
+        when(seatRepository.getSeatsByConcertId(concertId)).thenReturn(seats);
+
+        List<SeatSummaryResponse> resp = seatService.getSeats(concertId);
+
+        assertThat(resp).hasSize(3);
+        assertThat(resp.get(0).number()).isEqualTo("A-01");
+        assertThat(resp.get(0).seatGrade()).isEqualTo("VIP");
+        assertThat(resp.get(1).number()).isEqualTo("A-02");
+        assertThat(resp.get(1).seatGrade()).isEqualTo("VIP");
+        assertThat(resp.get(2).number()).isEqualTo("A-03");
+        assertThat(resp.get(2).seatGrade()).isEqualTo("R");
+
+    }
+
+    @Test
+    @DisplayName("공연 id로 조회되는 좌석 목록이 없다면 빈 리스트를 반환한다")
+    void getSeatsSuccessTestWithEmptyList() {
+
+        Long concertId = 1L;
+
+        when(seatRepository.getSeatsByConcertId(concertId)).thenReturn(Collections.emptyList());
+
+        List<SeatSummaryResponse> resp = seatService.getSeats(concertId);
+        assertThat(resp).isEmpty();
 
     }
 

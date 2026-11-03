@@ -1,5 +1,6 @@
 package io.mipangg.ticketrush.domain.seat.controller;
 
+import static io.mipangg.ticketrush.util.TestUtil.genSeatSummaryResponses;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -111,30 +112,7 @@ class SeatControllerTests {
 
         Long concertId = 1L;
 
-        List<SeatSummaryResponse> resp = List.of(
-                new SeatSummaryResponse(
-                        101L,
-                        "A-01",
-                        "VIP",
-                        BigDecimal.valueOf(150000),
-                        "AVAILABLE"
-                ),
-                new SeatSummaryResponse(
-                        102L,
-                        "A-02",
-                        "VIP",
-                        BigDecimal.valueOf(150000),
-                        "HELD"
-                ),
-                new SeatSummaryResponse(
-                        103L,
-                        "A-03",
-                        "R",
-                        BigDecimal.valueOf(100000),
-                        "SOLD"
-                )
-        );
-
+        List<SeatSummaryResponse> resp = genSeatSummaryResponses();
         when(seatService.getSeats(concertId)).thenReturn(resp);
 
         mockMvc.perform(get("/api/concerts/{concertId}/seats", concertId))

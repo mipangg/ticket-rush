@@ -10,6 +10,7 @@ import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import io.mipangg.ticketrush.global.exception.ErrorCode;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -78,7 +79,21 @@ public class SeatService {
 
     @Transactional(readOnly = true)
     public List<SeatSummaryResponse> getSeats(Long concertId) {
-        return null;
+
+        List<SeatSummaryResponse> seatSummaryResps = new ArrayList<>();
+
+        //  TODO: 우선 좌석 상태는 "AVAILABLE" 고정
+        seatRepository.getSeatsByConcertId(concertId).forEach(seat ->
+                seatSummaryResps.add(new SeatSummaryResponse(
+                        seat.getId(),
+                        seat.getNumber(),
+                        seat.getSeatGrade().getGrade(),
+                        seat.getSeatGrade().getPrice(),
+                        "AVAILABLE"
+                ))
+        );
+
+        return seatSummaryResps;
     }
 
     private SeatGrade getSeatGrade(Long seatGradeId, Long concertId) {

@@ -3,6 +3,7 @@ package io.mipangg.ticketrush.util;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
+import io.mipangg.ticketrush.domain.seat.dto.SeatSummaryResponse;
 import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import java.math.BigDecimal;
@@ -61,10 +62,50 @@ public class TestUtil {
     }
 
     public static Seat genSeat() {
-        return Seat.builder()
-                .number("A-01")
-                .seatGrade(genSeatGrade())
-                .build();
+        return genSeats().getFirst();
+    }
+
+    public static List<Seat> genSeats() {
+        return List.of(
+                Seat.builder()
+                        .number("A-01")
+                        .seatGrade(genSeatGrades().getFirst())
+                        .build(),
+                Seat.builder()
+                        .number("A-02")
+                        .seatGrade(genSeatGrades().getFirst())
+                        .build(),
+                Seat.builder()
+                        .number("A-03")
+                        .seatGrade(genSeatGrades().get(1))
+                        .build()
+        );
+    }
+
+    public static List<SeatSummaryResponse> genSeatSummaryResponses() {
+        return List.of(
+                new SeatSummaryResponse(
+                        101L,
+                        "A-01",
+                        "VIP",
+                        BigDecimal.valueOf(150000),
+                        "AVAILABLE"
+                ),
+                new SeatSummaryResponse(
+                        102L,
+                        "A-02",
+                        "VIP",
+                        BigDecimal.valueOf(150000),
+                        "HELD"
+                ),
+                new SeatSummaryResponse(
+                        103L,
+                        "A-03",
+                        "R",
+                        BigDecimal.valueOf(100000),
+                        "SOLD"
+                )
+        );
     }
 
     public static List<SeatGrade> genSeatGrades() {

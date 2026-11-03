@@ -73,7 +73,6 @@ public class SeatController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "좌석 목록 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 공연")
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
