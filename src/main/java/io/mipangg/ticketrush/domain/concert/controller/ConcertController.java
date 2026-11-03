@@ -2,6 +2,7 @@ package io.mipangg.ticketrush.domain.concert.controller;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.service.ConcertService;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,8 +44,8 @@ public class ConcertController {
     }
 
     @Operation(
-            summary = "공연 개별 조회",
-            description = "공연 ID를 이용하여 공연 좌석 정보를 조회합니다."
+            summary = "공연 단건 조회",
+            description = "공연 ID를 이용하여 공연 정보를 조회합니다."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "공연 조회 성공"),
@@ -53,6 +55,19 @@ public class ConcertController {
     @ResponseStatus(HttpStatus.OK)
     public ConcertDetailResponse getConcertDetail(@PathVariable Long concertId) {
         return concertService.getConcertDetail(concertId);
+    }
+
+    @Operation(
+            summary = "공연 목록 조회",
+            description = "저장된 모든 공연 목록 데이터를 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "공연 목록 조회 성공"),
+    })
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<ConcertSummaryResponse> getConcerts() {
+        return concertService.getConcerts();
     }
 
 }

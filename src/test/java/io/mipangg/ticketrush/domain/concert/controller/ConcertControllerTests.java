@@ -1,6 +1,7 @@
 package io.mipangg.ticketrush.domain.concert.controller;
 
 import static io.mipangg.ticketrush.util.TestUtil.genConcertCreateRequest;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,8 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.service.ConcertService;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +95,43 @@ class ConcertControllerTests {
                 .andExpect(jsonPath("$.location").value("예술의전당 오페라극장"))
                 .andDo(print());
 
+
+    }
+
+    @Test
+    @DisplayName("공연 목록 조회 성공 테스트")
+    void getConcertsSuccessTest() throws Exception {
+
+        List<ConcertSummaryResponse> resp = List.of(
+                new ConcertSummaryResponse(
+                        1L,
+                        "뮤지컬 위키드",
+                        LocalDateTime.of(2026, 10, 10, 19, 0),
+                        LocalDateTime.of(2026, 10, 10, 21, 30),
+                        "예술의전당 오페라극장"
+                ),
+                new ConcertSummaryResponse(
+                        2L,
+                        "뮤지컬 라이온킹",
+                        LocalDateTime.of(2026, 11, 1, 19, 0),
+                        LocalDateTime.of(2026, 11, 1, 21, 30),
+                        "샤롯데씨어터"
+                )
+        );
+
+        when(concertService.getConcerts()).thenReturn(resp);
+
+        mockMvc.perform(get("/api/concerts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].title").value("뮤지컬 위키드"))
+                .andExpect(jsonPath("$[0].startAt").value("2026-10-10T19:00:00"))
+                .andExpect(jsonPath("$[0].endAt").value("2026-10-10T21:30:00"))
+                .andExpect(jsonPath("$[0].location").value("예술의전당 오페라극장"))
+                .andDo(print());
+
+        verify(concertService).getConcerts();
 
     }
 

@@ -3,10 +3,12 @@ package io.mipangg.ticketrush.domain.concert.service;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.concert.repository.ConcertRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import io.mipangg.ticketrush.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,5 +67,9 @@ public class ConcertService {
                 targetConcert.getCreatedAt(),
                 targetConcert.getUpdatedAt()
         );
+    }
+
+    public List<ConcertSummaryResponse> getConcerts() {
+        return null;
     }
 }
