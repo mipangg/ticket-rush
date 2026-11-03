@@ -2,6 +2,7 @@ package io.mipangg.ticketrush.domain.concert.service;
 
 import static io.mipangg.ticketrush.util.TestUtil.genConcert;
 import static io.mipangg.ticketrush.util.TestUtil.genConcertCreateRequest;
+import static io.mipangg.ticketrush.util.TestUtil.genConcerts;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,10 +12,12 @@ import static org.mockito.Mockito.when;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.concert.repository.ConcertRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,6 +99,26 @@ class ConcertServiceTests {
                 }
         ).isInstanceOf(CustomLogicException.class)
                 .hasMessage("데이터를 찾을 수 없습니다.");
+
+    }
+
+    @Test
+    @DisplayName("공연 목록 조회를 할 수 있다")
+    void getConcertsSuccessTest() {
+
+        List<Concert> concerts = genConcerts();
+
+        when(concertRepository.findAll()).thenReturn(concerts);
+
+        List<ConcertSummaryResponse> resp = concertService.getConcerts();
+
+        assertThat(resp).hasSize(2);
+        assertThat(resp.get(0).title()).isEqualTo("뮤지컬 위키드");
+        assertThat(resp.get(1).title()).isEqualTo("뮤지컬 라이온킹");
+        assertThat(resp.get(0).startAt()).isEqualTo(LocalDateTime.of(2026, 10, 10, 19, 0));
+        assertThat(resp.get(0).endAt()).isEqualTo(LocalDateTime.of(2026, 10, 10, 21, 30));
+        assertThat(resp.get(0).location()).isEqualTo("예술의전당 오페라극장");
+        assertThat(resp.get(1).location()).isEqualTo("샤롯데씨어터");
 
     }
 

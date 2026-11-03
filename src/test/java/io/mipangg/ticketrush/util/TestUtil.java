@@ -1,6 +1,7 @@
 package io.mipangg.ticketrush.util;
 
 import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateRequest;
+import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
@@ -20,12 +21,43 @@ public class TestUtil {
     }
 
     public static Concert genConcert() {
-        return Concert.builder()
-                .title("뮤지컬 위키드")
-                .startAt(LocalDateTime.of(2026, 10, 10, 19, 0))
-                .endAt(LocalDateTime.of(2026, 10, 10, 21, 30))
-                .location("예술의전당 오페라극장")
-                .build();
+        return genConcerts().getFirst();
+    }
+
+    public static List<Concert> genConcerts() {
+        return List.of(
+                Concert.builder()
+                        .title("뮤지컬 위키드")
+                        .startAt(LocalDateTime.of(2026, 10, 10, 19, 0))
+                        .endAt(LocalDateTime.of(2026, 10, 10, 21, 30))
+                        .location("예술의전당 오페라극장")
+                        .build(),
+                Concert.builder()
+                        .title("뮤지컬 라이온킹")
+                        .startAt(LocalDateTime.of(2026, 11, 1, 19, 0))
+                        .endAt(LocalDateTime.of(2026, 11, 1, 21, 30))
+                        .location("샤롯데씨어터")
+                        .build()
+        );
+    }
+
+    public static List<ConcertSummaryResponse> genConcertSummaryResponses() {
+        return List.of(
+                new ConcertSummaryResponse(
+                        1L,
+                        "뮤지컬 위키드",
+                        LocalDateTime.of(2026, 10, 10, 19, 0),
+                        LocalDateTime.of(2026, 10, 10, 21, 30),
+                        "예술의전당 오페라극장"
+                ),
+                new ConcertSummaryResponse(
+                        2L,
+                        "뮤지컬 라이온킹",
+                        LocalDateTime.of(2026, 11, 1, 19, 0),
+                        LocalDateTime.of(2026, 11, 1, 21, 30),
+                        "샤롯데씨어터"
+                )
+        );
     }
 
     public static Seat genSeat() {
@@ -64,6 +96,5 @@ public class TestUtil {
     public static SeatGrade genSeatGrade() {
         return genSeatGrades().getFirst();
     }
-
 
 }

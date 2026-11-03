@@ -8,6 +8,7 @@ import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.concert.repository.ConcertRepository;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import io.mipangg.ticketrush.global.exception.ErrorCode;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,21 @@ public class ConcertService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<ConcertSummaryResponse> getConcerts() {
-        return null;
+
+        List<ConcertSummaryResponse> concertSummaryResps = new ArrayList<>();
+
+        concertRepository.findAll().forEach(concert -> concertSummaryResps.add(
+                new ConcertSummaryResponse(
+                        concert.getId(),
+                        concert.getTitle(),
+                        concert.getStartAt(),
+                        concert.getEndAt(),
+                        concert.getLocation()
+                )
+        ));
+
+        return concertSummaryResps;
     }
 }
