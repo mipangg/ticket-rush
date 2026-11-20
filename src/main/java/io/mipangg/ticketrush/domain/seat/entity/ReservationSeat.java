@@ -29,7 +29,6 @@ import lombok.NoArgsConstructor;
         }
 )
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationSeat extends BaseEntity {
@@ -46,5 +45,11 @@ public class ReservationSeat extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
+
+    @Builder
+    public ReservationSeat(Reservation reservation, Seat seat) {
+        this.reservation = reservation;
+        this.seat = seat;
+    }
 
 }

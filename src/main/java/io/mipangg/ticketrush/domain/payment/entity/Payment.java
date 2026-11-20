@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,18 +31,30 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", nullable = false)
-    private Reservation reservation;
-
     @Column(nullable = false, unique = true)
     private String transactionId;
 
     @Column(nullable = false)
     private BigDecimal price;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReservationStatus status;
 
+    @Builder
+    public Payment(
+            String transactionId,
+            BigDecimal price,
+            Reservation reservation,
+            ReservationStatus status
+    ) {
+        this.transactionId = transactionId;
+        this.price = price;
+        this.reservation = reservation;
+        this.status = status;
+    }
 }

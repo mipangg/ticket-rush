@@ -1,7 +1,6 @@
 package io.mipangg.ticketrush.domain.seat.entity;
 
 import io.mipangg.ticketrush.domain.common.BaseEntity;
-import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,7 +27,6 @@ import lombok.NoArgsConstructor;
                 )
         }
 )
-@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -45,5 +43,11 @@ public class Seat extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_grade_id", nullable = false)
     private SeatGrade seatGrade;
+
+    @Builder
+    public Seat(String number, SeatGrade seatGrade) {
+        this.number = number;
+        this.seatGrade = seatGrade;
+    }
 
 }
