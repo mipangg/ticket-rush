@@ -15,6 +15,7 @@ import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.concert.repository.ConcertRepository;
+import io.mipangg.ticketrush.global.common.CursorResponse;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -106,20 +108,23 @@ class ConcertServiceTests {
     @DisplayName("공연 목록 조회를 할 수 있다")
     void getConcertsSuccessTest() {
 
+        int size = 10;
         List<Concert> concerts = genConcerts();
 
-        when(concertRepository.findAll()).thenReturn(concerts);
+        when(concertRepository.findConcerts(null, PageRequest.of(0, size + 1)))
+                .thenReturn(concerts);
 
-        List<ConcertSummaryResponse> resp = concertService.getConcerts();
+        CursorResponse<ConcertSummaryResponse> resp = concertService.getConcerts(null, size);
 
-        assertThat(resp).hasSize(2);
-        assertThat(resp.get(0).title()).isEqualTo("뮤지컬 위키드");
-        assertThat(resp.get(1).title()).isEqualTo("뮤지컬 라이온킹");
-        assertThat(resp.get(0).startAt()).isEqualTo(LocalDateTime.of(2026, 10, 10, 19, 0));
-        assertThat(resp.get(0).endAt()).isEqualTo(LocalDateTime.of(2026, 10, 10, 21, 30));
-        assertThat(resp.get(0).location()).isEqualTo("예술의전당 오페라극장");
-        assertThat(resp.get(1).location()).isEqualTo("샤롯데씨어터");
-
+        assertThat(resp.content()).hasSize(2);
+        assertThat(resp.content().get(0).title()).isEqualTo("뮤지컬 위키드");
+        assertThat(resp.content().get(1).title()).isEqualTo("뮤지컬 라이온킹");
+        assertThat(resp.content().get(0).startAt()).isEqualTo(LocalDateTime.of(2026, 10, 10, 19, 0));
+        assertThat(resp.content().get(0).endAt()).isEqualTo(LocalDateTime.of(2026, 10, 10, 21, 30));
+        assertThat(resp.content().get(0).location()).isEqualTo("예술의전당 오페라극장");
+        assertThat(resp.content().get(1).location()).isEqualTo("샤롯데씨어터");
+        assertThat(resp.hasNext()).isFalse();
+        assertThat(resp.nextCursor()).isNull();
     }
 
 }

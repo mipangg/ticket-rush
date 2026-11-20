@@ -6,11 +6,13 @@ import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.entity.Concert;
 import io.mipangg.ticketrush.domain.concert.repository.ConcertRepository;
+import io.mipangg.ticketrush.global.common.CursorResponse;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import io.mipangg.ticketrush.global.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,6 @@ public class ConcertService {
                         "해당 공연 데이터를 찾을 수 없습니다."
                 ));
 
-
         return new ConcertDetailResponse(
                 targetConcert.getId(),
                 targetConcert.getTitle(),
@@ -71,11 +72,21 @@ public class ConcertService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConcertSummaryResponse> getConcerts() {
+    public CursorResponse<ConcertSummaryResponse> getConcerts(Long cursor, int size) {
 
-        List<ConcertSummaryResponse> concertSummaryResps = new ArrayList<>();
+        List<Concert> concerts = concertRepository.findConcerts(
+                cursor,
+                PageRequest.of(0, size + 1)
+        );
 
-        concertRepository.findAll().forEach(concert -> concertSummaryResps.add(
+        boolean hasNext = concerts.size() > size;
+        if (hasNext) {
+            concerts = concerts.subList(0, size); // 초과분 제거
+        }
+
+        List<ConcertSummaryResponse> content = new ArrayList<>();
+
+        concerts.forEach(concert -> content.add(
                 new ConcertSummaryResponse(
                         concert.getId(),
                         concert.getTitle(),
@@ -85,6 +96,8 @@ public class ConcertService {
                 )
         ));
 
-        return concertSummaryResps;
+        Long nextCursor = hasNext ? content.getLast().id() : null;
+
+        return new CursorResponse<>(content, nextCursor, hasNext);
     }
 }

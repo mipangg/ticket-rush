@@ -18,7 +18,9 @@ import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
+import io.mipangg.ticketrush.global.common.CursorResponse;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
+import java.awt.Cursor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class SeatServiceTests {
@@ -156,19 +159,23 @@ class SeatServiceTests {
     void getSeatsSuccessTest() {
 
         Long concertId = 1L;
+        int size = 10;
         List<Seat> seats = genSeats();
 
-        when(seatRepository.getSeatsByConcertId(concertId)).thenReturn(seats);
+        when(seatRepository.getSeatsByConcertId(concertId, null, PageRequest.of(0, size + 1)))
+                .thenReturn(seats);
 
-        List<SeatSummaryResponse> resp = seatService.getSeats(concertId);
+        CursorResponse<SeatSummaryResponse> resp = seatService.getSeats(concertId, null, size);
 
-        assertThat(resp).hasSize(3);
-        assertThat(resp.get(0).number()).isEqualTo("A-01");
-        assertThat(resp.get(0).seatGrade()).isEqualTo("VIP");
-        assertThat(resp.get(1).number()).isEqualTo("A-02");
-        assertThat(resp.get(1).seatGrade()).isEqualTo("VIP");
-        assertThat(resp.get(2).number()).isEqualTo("A-03");
-        assertThat(resp.get(2).seatGrade()).isEqualTo("R");
+        assertThat(resp.content()).hasSize(3);
+        assertThat(resp.content().get(0).number()).isEqualTo("A-01");
+        assertThat(resp.content().get(0).seatGrade()).isEqualTo("VIP");
+        assertThat(resp.content().get(1).number()).isEqualTo("A-02");
+        assertThat(resp.content().get(1).seatGrade()).isEqualTo("VIP");
+        assertThat(resp.content().get(2).number()).isEqualTo("A-03");
+        assertThat(resp.content().get(2).seatGrade()).isEqualTo("R");
+        assertThat(resp.hasNext()).isFalse();
+        assertThat(resp.nextCursor()).isNull();
 
     }
 
@@ -177,11 +184,15 @@ class SeatServiceTests {
     void getSeatsSuccessTestWithEmptyList() {
 
         Long concertId = 1L;
+        int size = 10;
 
-        when(seatRepository.getSeatsByConcertId(concertId)).thenReturn(Collections.emptyList());
+        when(seatRepository.getSeatsByConcertId(concertId, null, PageRequest.of(0, size + 1)))
+                .thenReturn(Collections.emptyList());
 
-        List<SeatSummaryResponse> resp = seatService.getSeats(concertId);
-        assertThat(resp).isEmpty();
+        CursorResponse<SeatSummaryResponse> resp = seatService.getSeats(concertId, null, size);
+        assertThat(resp.content()).isEmpty();
+        assertThat(resp.hasNext()).isFalse();
+        assertThat(resp.nextCursor()).isNull();
 
     }
 

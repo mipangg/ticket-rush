@@ -4,6 +4,7 @@ import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +24,12 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     @Query("select s from Seat s "
             + "join fetch s.seatGrade sg "
-            + "where sg.concert.id = :concertId")
-    List<Seat> getSeatsByConcertId(@Param("concertId") Long concertId);
+            + "where sg.concert.id = :concertId "
+            + "and (:cursor is null or s.id > :cursor) "
+            + "order by s.id asc")
+    List<Seat> getSeatsByConcertId(
+            @Param("concertId") Long concertId,
+            @Param("cursor") Long cursor,
+            Pageable pageable
+    );
 }

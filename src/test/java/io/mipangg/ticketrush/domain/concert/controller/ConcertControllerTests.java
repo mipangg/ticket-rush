@@ -18,6 +18,7 @@ import io.mipangg.ticketrush.domain.concert.dto.ConcertCreateResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertDetailResponse;
 import io.mipangg.ticketrush.domain.concert.dto.ConcertSummaryResponse;
 import io.mipangg.ticketrush.domain.concert.service.ConcertService;
+import io.mipangg.ticketrush.global.common.CursorResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -103,21 +104,25 @@ class ConcertControllerTests {
     @DisplayName("공연 목록 조회 성공 테스트")
     void getConcertsSuccessTest() throws Exception {
 
-        List<ConcertSummaryResponse> resp = genConcertSummaryResponses();
+        List<ConcertSummaryResponse> content = genConcertSummaryResponses();
+        CursorResponse<ConcertSummaryResponse> resp = new CursorResponse<>(content, null, false);
 
-        when(concertService.getConcerts()).thenReturn(resp);
+        // 기본값: cursor 없음, size = 10
+        when(concertService.getConcerts(null, 10)).thenReturn(resp);
 
         mockMvc.perform(get("/api/concerts"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].title").value("뮤지컬 위키드"))
-                .andExpect(jsonPath("$[0].startAt").value("2026-10-10T19:00:00"))
-                .andExpect(jsonPath("$[0].endAt").value("2026-10-10T21:30:00"))
-                .andExpect(jsonPath("$[0].location").value("예술의전당 오페라극장"))
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].title").value("뮤지컬 위키드"))
+                .andExpect(jsonPath("$.content[0].startAt").value("2026-10-10T19:00:00"))
+                .andExpect(jsonPath("$.content[0].endAt").value("2026-10-10T21:30:00"))
+                .andExpect(jsonPath("$.content[0].location").value("예술의전당 오페라극장"))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andExpect(jsonPath("$.nextCursor").doesNotExist())
                 .andDo(print());
 
-        verify(concertService).getConcerts();
+        verify(concertService).getConcerts(null, 10);
 
     }
 

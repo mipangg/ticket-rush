@@ -18,6 +18,7 @@ import io.mipangg.ticketrush.domain.seat.dto.SeatCreateResponse;
 import io.mipangg.ticketrush.domain.seat.dto.SeatDetailResponse;
 import io.mipangg.ticketrush.domain.seat.dto.SeatSummaryResponse;
 import io.mipangg.ticketrush.domain.seat.service.SeatService;
+import io.mipangg.ticketrush.global.common.CursorResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -112,27 +113,32 @@ class SeatControllerTests {
 
         Long concertId = 1L;
 
-        List<SeatSummaryResponse> resp = genSeatSummaryResponses();
-        when(seatService.getSeats(concertId)).thenReturn(resp);
+        List<SeatSummaryResponse> content = genSeatSummaryResponses();
+        CursorResponse<SeatSummaryResponse> resp = new CursorResponse<>(content, null, false);
+
+        // 기본값: cursor 없음, size = 10
+        when(seatService.getSeats(concertId, null, 10)).thenReturn(resp);
 
         mockMvc.perform(get("/api/concerts/{concertId}/seats", concertId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].number").value("A-01"))
-                .andExpect(jsonPath("$[1].number").value("A-02"))
-                .andExpect(jsonPath("$[2].number").value("A-03"))
-                .andExpect(jsonPath("$[0].seatGrade").value("VIP"))
-                .andExpect(jsonPath("$[1].seatGrade").value("VIP"))
-                .andExpect(jsonPath("$[2].seatGrade").value("R"))
-                .andExpect(jsonPath("$[0].price").value(150000))
-                .andExpect(jsonPath("$[1].price").value(150000))
-                .andExpect(jsonPath("$[2].price").value(100000))
-                .andExpect(jsonPath("$[0].status").value("AVAILABLE"))
-                .andExpect(jsonPath("$[1].status").value("HELD"))
-                .andExpect(jsonPath("$[2].status").value("SOLD"))
+                .andExpect(jsonPath("$.content", hasSize(3)))
+                .andExpect(jsonPath("$.content[0].number").value("A-01"))
+                .andExpect(jsonPath("$.content[1].number").value("A-02"))
+                .andExpect(jsonPath("$.content[2].number").value("A-03"))
+                .andExpect(jsonPath("$.content[0].seatGrade").value("VIP"))
+                .andExpect(jsonPath("$.content[1].seatGrade").value("VIP"))
+                .andExpect(jsonPath("$.content[2].seatGrade").value("R"))
+                .andExpect(jsonPath("$.content[0].price").value(150000))
+                .andExpect(jsonPath("$.content[1].price").value(150000))
+                .andExpect(jsonPath("$.content[2].price").value(100000))
+                .andExpect(jsonPath("$.content[0].status").value("AVAILABLE"))
+                .andExpect(jsonPath("$.content[1].status").value("HELD"))
+                .andExpect(jsonPath("$.content[2].status").value("SOLD"))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andExpect(jsonPath("$.nextCursor").doesNotExist())
                 .andDo(print());
 
-        verify(seatService).getSeats(concertId);
+        verify(seatService).getSeats(concertId, null, 10);
 
     }
 

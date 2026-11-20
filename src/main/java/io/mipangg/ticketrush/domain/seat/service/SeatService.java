@@ -8,12 +8,14 @@ import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import io.mipangg.ticketrush.domain.seat.entity.SeatGrade;
 import io.mipangg.ticketrush.domain.seat.repository.SeatGradeRepository;
 import io.mipangg.ticketrush.domain.seat.repository.SeatRepository;
+import io.mipangg.ticketrush.global.common.CursorResponse;
 import io.mipangg.ticketrush.global.exception.CustomLogicException;
 import io.mipangg.ticketrush.global.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,13 +80,24 @@ public class SeatService {
     }
 
     @Transactional(readOnly = true)
-    public List<SeatSummaryResponse> getSeats(Long concertId) {
+    public CursorResponse<SeatSummaryResponse> getSeats(Long concertId, Long cursor, int size) {
 
-        List<SeatSummaryResponse> seatSummaryResps = new ArrayList<>();
+        List<Seat> seats = seatRepository.getSeatsByConcertId(
+                concertId,
+                cursor,
+                PageRequest.of(0, size + 1)
+        );
+
+        boolean hasNext = seats.size() > size;
+        if (hasNext) {
+            seats = seats.subList(0, size); // 초과분 제거
+        }
+
+        List<SeatSummaryResponse> content = new ArrayList<>();
 
         //  TODO: 우선 좌석 상태는 "AVAILABLE" 고정
-        seatRepository.getSeatsByConcertId(concertId).forEach(seat ->
-                seatSummaryResps.add(new SeatSummaryResponse(
+        seats.forEach(seat -> content.add(
+                new SeatSummaryResponse(
                         seat.getId(),
                         seat.getNumber(),
                         seat.getSeatGrade().getGrade(),
@@ -93,7 +106,9 @@ public class SeatService {
                 ))
         );
 
-        return seatSummaryResps;
+        Long nextCursor = hasNext ? content.getLast().id() : null;
+
+        return new CursorResponse<>(content, nextCursor, hasNext);
     }
 
     private SeatGrade getSeatGrade(Long seatGradeId, Long concertId) {
