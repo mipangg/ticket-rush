@@ -74,7 +74,7 @@ public class ConcertService {
     @Transactional(readOnly = true)
     public CursorResponse<ConcertSummaryResponse> getConcerts(Long cursor, int size) {
 
-        List<Concert> concerts = concertRepository.findConcerts(
+        List<Concert> concerts = concertRepository.findAllAfterCursor(
                 cursor,
                 PageRequest.of(0, size + 1)
         );

@@ -62,7 +62,7 @@ public class SeatService {
     @Transactional(readOnly = true)
     public SeatDetailResponse getSeatDetail(Long concertId, Long seatId) {
 
-        Seat targetSeat = seatRepository.findByIdAndConcertIdWithSeatGrade(seatId, concertId)
+        Seat targetSeat = seatRepository.findByIdAndConcertId(seatId, concertId)
                 .orElseThrow(() -> new CustomLogicException(
                         ErrorCode.NOT_FOUND,
                         "해당 좌석 데이터를 찾을 수 없습니다."
@@ -82,7 +82,7 @@ public class SeatService {
     @Transactional(readOnly = true)
     public CursorResponse<SeatSummaryResponse> getSeats(Long concertId, Long cursor, int size) {
 
-        List<Seat> seats = seatRepository.getSeatsByConcertId(
+        List<Seat> seats = seatRepository.findByConcertIdAfterCursor(
                 concertId,
                 cursor,
                 PageRequest.of(0, size + 1)

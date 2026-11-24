@@ -123,7 +123,7 @@ class SeatServiceTests {
 
         Seat seat = genSeat();
 
-        when(seatRepository.findByIdAndConcertIdWithSeatGrade(seatId, concertId))
+        when(seatRepository.findByIdAndConcertId(seatId, concertId))
                 .thenReturn(Optional.of(seat));
 
         SeatDetailResponse resp = seatService.getSeatDetail(concertId, seatId);
@@ -131,7 +131,7 @@ class SeatServiceTests {
         assertThat(resp.seatGrade()).isEqualTo("VIP");
         assertThat(resp.number()).isEqualTo("A-01");
 
-        verify(seatRepository).findByIdAndConcertIdWithSeatGrade(seatId, concertId);
+        verify(seatRepository).findByIdAndConcertId(seatId, concertId);
 
     }
 
@@ -142,7 +142,7 @@ class SeatServiceTests {
         Long concertId = 1L;
         Long seatId = 1L;
 
-        when(seatRepository.findByIdAndConcertIdWithSeatGrade(seatId, concertId))
+        when(seatRepository.findByIdAndConcertId(seatId, concertId))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(
@@ -162,7 +162,7 @@ class SeatServiceTests {
         int size = 10;
         List<Seat> seats = genSeats();
 
-        when(seatRepository.getSeatsByConcertId(concertId, null, PageRequest.of(0, size + 1)))
+        when(seatRepository.findByConcertIdAfterCursor(concertId, null, PageRequest.of(0, size + 1)))
                 .thenReturn(seats);
 
         CursorResponse<SeatSummaryResponse> resp = seatService.getSeats(concertId, null, size);
@@ -186,7 +186,7 @@ class SeatServiceTests {
         Long concertId = 1L;
         int size = 10;
 
-        when(seatRepository.getSeatsByConcertId(concertId, null, PageRequest.of(0, size + 1)))
+        when(seatRepository.findByConcertIdAfterCursor(concertId, null, PageRequest.of(0, size + 1)))
                 .thenReturn(Collections.emptyList());
 
         CursorResponse<SeatSummaryResponse> resp = seatService.getSeats(concertId, null, size);

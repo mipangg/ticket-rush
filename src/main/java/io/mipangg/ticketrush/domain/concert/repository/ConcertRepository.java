@@ -12,6 +12,6 @@ public interface ConcertRepository extends JpaRepository<Concert, Long> {
     @Query("select c from Concert c "
             + "where :cursor is null or c.id > :cursor "
             + "order by c.id asc")
-    List<Concert> findConcerts(@Param("cursor") Long cursor, Pageable pageable);
+    List<Concert> findAllAfterCursor(@Param("cursor") Long cursor, Pageable pageable);
 
 }
