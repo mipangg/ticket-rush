@@ -27,6 +27,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Reservation extends BaseEntity {
 
+    private static final long RESERVATION_TIMEOUT_MINUTES = 10L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -51,12 +53,11 @@ public class Reservation extends BaseEntity {
 
     @Builder
     public Reservation(
-            LocalDateTime expiresAt,
             User user,
             Concert concert
     ) {
         this.status = ReservationStatus.PENDING;
-        this.expiresAt = expiresAt;
+        this.expiresAt = LocalDateTime.now().plusMinutes(RESERVATION_TIMEOUT_MINUTES);
         this.user = user;
         this.concert = concert;
     }
