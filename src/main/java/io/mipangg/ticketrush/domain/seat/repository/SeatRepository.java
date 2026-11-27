@@ -34,7 +34,8 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     );
 
     @Query("select s from Seat s "
-            + "join fetch s.seatGrade "
+            + "join fetch s.seatGrade sg "
+            + "join fetch sg.concert "
             + "where s.id in :ids")
     List<Seat> findByIdIn(@Param("ids") List<Long> ids);
 }
