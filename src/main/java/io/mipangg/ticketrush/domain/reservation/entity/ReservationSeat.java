@@ -1,7 +1,7 @@
-package io.mipangg.ticketrush.domain.seat.entity;
+package io.mipangg.ticketrush.domain.reservation.entity;
 
 import io.mipangg.ticketrush.domain.common.BaseEntity;
-import io.mipangg.ticketrush.domain.reservation.entity.Reservation;
+import io.mipangg.ticketrush.domain.seat.entity.Seat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -17,7 +17,7 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
             + "join fetch s.seatGrade sg "
             + "where s.id = :id "
             + "and sg.concert.id = :concertId")
-    Optional<Seat> findByIdAndConcertIdWithSeatGrade(
+    Optional<Seat> findByIdAndConcertId(
             @Param("id") Long id,
             @Param("concertId") Long concertId
     );
@@ -27,9 +27,15 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
             + "where sg.concert.id = :concertId "
             + "and (:cursor is null or s.id > :cursor) "
             + "order by s.id asc")
-    List<Seat> getSeatsByConcertId(
+    List<Seat> findByConcertIdAfterCursor(
             @Param("concertId") Long concertId,
             @Param("cursor") Long cursor,
             Pageable pageable
     );
+
+    @Query("select s from Seat s "
+            + "join fetch s.seatGrade sg "
+            + "join fetch sg.concert "
+            + "where s.id in :ids")
+    List<Seat> findByIdIn(@Param("ids") List<Long> ids);
 }
